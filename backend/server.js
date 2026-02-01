@@ -2,41 +2,44 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path');
 
 // Import routes
 const chatRouter = require('./routes/chat');
-const adminRouter = require('./routes/admin');
+
 const menuRouter = require('./routes/menu');
+const feedbackRouter = require('./routes/feedback');
+const analyticsRouter = require('./routes/analytics');
 
 // Initialize express app
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL || 'https://your-app.vercel.app'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
-try {
-  app.use('/api/chat', chatRouter);
-  console.log('✅ Chat router loaded');
-} catch (e) {
-  console.error('❌ Chat router failed:', e.message);
-}
+app.use('/api/chat', chatRouter);
 
-try {
-  app.use('/api/admin', adminRouter);
-  console.log('✅ Admin router loaded');
-} catch (e) {
-  console.error('❌ Admin router failed:', e.message);
-}
-
-try {
-  app.use('/api/menu', menuRouter);
-  console.log('✅ Menu router loaded');
-} catch (e) {
-  console.error('❌ Menu router failed:', e.message);
-}
+app.use('/api/menu', menuRouter);
+app.use('/api/feedback', feedbackRouter);
+app.use('/api/analytics', analyticsRouter);
 
 // MongoDB Connection
 const MONGO = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/foodieai';
@@ -45,22 +48,14 @@ mongoose.connect(MONGO, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => console.log('✅ Mongo connected successfully'))
-.catch(err => console.error('❌ Mongo connection failed:', err.message));
+  .then(() => console.log('✅ Mongo connected successfully'))
+  .catch(err => console.error('❌ Mongo connection failed:', err.message));
 
-// Serve frontend (optional)
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
-  });
-}
+// ❌ REMOVE frontend serving — frontend will deploy to Netlify/Vercel
+// No static serve here, because we are deploying backend alone.
 
 // Start Server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-
-app.use("/api/feedback", require("./routes/feedback"));
-app.use("/api/analytics", require("./routes/analytics"));
 
 

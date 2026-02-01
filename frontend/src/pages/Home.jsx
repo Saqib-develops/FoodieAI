@@ -36,8 +36,7 @@ export default function Home() {
         }}
       >
         AI-powered restaurant assistant that helps customers decide what to eat
-        and enables restaurant owners to create professional menu content in
-        seconds.
+        based on their preferences and dietary needs.
       </p>
 
       <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
@@ -59,23 +58,7 @@ export default function Home() {
           </button>
         </Link>
 
-        <Link to="/admin">
-          <button
-            style={{
-              background: "#fff",
-              color: "#0072ff",
-              padding: "12px 28px",
-              borderRadius: "10px",
-              fontWeight: "600",
-              fontSize: "1rem",
-              border: "none",
-              cursor: "pointer",
-              transition: "0.3s",
-            }}
-          >
-            Admin Dashboard
-          </button>
-        </Link>
+
       </div>
 
       <style>

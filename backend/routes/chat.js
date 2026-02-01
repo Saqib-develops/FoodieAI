@@ -38,6 +38,7 @@ router.post("/query", async (req, res) => {
         name: item.name,
         price: item.price,
         description: item.description || "",
+        photoUrl: item.photoUrl || "",
         score: (item.likes || 0) - (item.dislikes || 0) // <-- Popularity ranking
       })),
       null,
@@ -58,6 +59,7 @@ Return ONLY pure JSON:
     "name": "Dish Name",
     "price": 120,
     "description": "very short flavor note",
+    "photoUrl": "photo URL from menu or empty string",
     "tags": ["veg", "spicy"]
   }
 ]
@@ -72,8 +74,16 @@ User request:
     const ai = await callGeminiConversational(prompt);
 
     // ✅ Clean output (remove ```json formatting if present)
+    // ✅ Clean output (remove ```json formatting if present)
     let raw = (ai.output || "").trim();
-    raw = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
+    // Try to extract just the JSON array part
+    const jsonMatch = raw.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      raw = jsonMatch[0];
+    } else {
+      // Fallback: just strip backticks
+      raw = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
+    }
 
     let parsed;
     try {
