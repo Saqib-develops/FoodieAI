@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test - FoodieAI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+        }
+        .success {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+        .error {
+            border-left-color: #e53e3e;
+            background: #fff5f5;
+        }
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 FoodieAI API Diagnostic Tool</h1>
+        <p>This page helps debug the connection between your frontend and backend.</p>
+        
+        <button onclick="testBackend()">Test Backend Connection</button>
+        <button onclick="testChatAPI()">Test Chat API</button>
+        <button onclick="clearResults()">Clear Results</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_URL = 'https://foodieai-backend.onrender.com';
+        
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function testBackend() {
+            clearResults();
+            log('<h3>Testing Backend Connection...</h3>');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/menu`, {
+                    method: 'GET',
+                });
+                
+                log(`<strong>Status:</strong> ${response.status} ${response.statusText}`, 
+                    response.ok ? 'success' : 'error');
+                
+                const data = await response.json();
+                log(`<strong>Response:</strong><pre>${JSON.stringify(data, null, 2)}</pre>`, 'success');
+                
+            } catch (error) {
+                log(`<strong>Error:</strong> ${error.message}`, 'error');
+                log(`<pre>${error.stack}</pre>`, 'error');
+            }
+        }
+
+        async function testChatAPI() {
+            clearResults();
+            log('<h3>Testing Chat API...</h3>');
+            
+            try {
+                log(`<strong>Request URL:</strong> ${API_URL}/api/chat/query`);
+                log(`<strong>Request Method:</strong> POST`);
+                log(`<strong>Request Body:</strong> { "message": "test" }`);
+                
+                const response = await fetch(`${API_URL}/api/chat/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: 'test' })
+                });
+                
+                log(`<strong>Status:</strong> ${response.status} ${response.statusText}`, 
+                    response.ok ? 'success' : 'error');
+                
+                // Log response headers
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    headers[key] = value;
+                });
+                log(`<strong>Response Headers:</strong><pre>${JSON.stringify(headers, null, 2)}</pre>`);
+                
+                const data = await response.json();
+                log(`<strong>Response Data:</strong><pre>${JSON.stringify(data, null, 2)}</pre>`, 
+                    response.ok ? 'success' : 'error');
+                
+            } catch (error) {
+                log(`<strong>Error:</strong> ${error.message}`, 'error');
+                log(`<pre>${error.stack}</pre>`, 'error');
+            }
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            log('<h3>Page Loaded - Environment Info:</h3>');
+            log(`<strong>Current URL:</strong> ${window.location.href}`);
+            log(`<strong>Backend URL:</strong> ${API_URL}`);
+            log(`<strong>User Agent:</strong> ${navigator.userAgent}`);
+        });
+    </script>
+</body>
+</html>
