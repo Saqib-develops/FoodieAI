@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+
 export default function CustomerChat() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
@@ -16,7 +18,7 @@ export default function CustomerChat() {
 
   async function sendFeedback(dishName, liked) {
     try {
-      await axios.post("/api/feedback", { name: dishName, liked });
+      await axios.post(`${API_BASE_URL}/api/feedback`, { name: dishName, liked });
     } catch (err) {
       console.error("Feedback failed", err);
     }
@@ -30,7 +32,7 @@ export default function CustomerChat() {
     setTyping(true);
 
     try {
-      const res = await axios.post("/api/chat/query", { message: input });
+      const res = await axios.post(`${API_BASE_URL}/api/chat/query`, { message: input });
       const dishes = res.data.answer?.slice(0, 3) || [];
 
       // Store AI response with dishes
