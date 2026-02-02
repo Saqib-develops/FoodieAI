@@ -54,3 +54,5 @@ coverage/
 # Uploads (if you add file upload storage)
 uploads/
 temp/
+
+.vercel
