@@ -102,9 +102,12 @@ You should see your menu items!
 
 **Settings:**
 - **Framework Preset:** Vite
-- **Root Directory:** `frontend`
-- **Build Command:** `npm run build`
-- **Output Directory:** `dist`
+- **Build Command:** Leave default or use: `cd frontend && npm run build`
+- **Output Directory:** `frontend/dist`
+- **Install Command:** `npm install --prefix frontend`
+
+> [!NOTE]
+> The `vercel.json` in your project root handles the configuration automatically.
 
 ### 3.3 Add Environment Variable
 
