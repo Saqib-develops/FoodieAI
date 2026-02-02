@@ -3,6 +3,10 @@ import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
+// Debug: Log the API URL (remove this after testing)
+console.log("🔍 API_BASE_URL:", API_BASE_URL);
+console.log("🔍 VITE_API_URL:", import.meta.env.VITE_API_URL);
+
 export default function CustomerChat() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
