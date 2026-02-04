@@ -17,7 +17,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://foodieai-mvp.vercel.app',  // Production frontend
+  "https://foodieai-frontend.onrender.com",  // Production frontend
   process.env.FRONTEND_URL || 'https://your-app.vercel.app'
 ];
 
