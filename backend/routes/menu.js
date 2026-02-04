@@ -5,13 +5,14 @@ const router = express.Router();
 // Add a new menu item
 router.post("/", async (req, res) => {
   try {
-    const { name, price, ingredients, description } = req.body;
+    const { name, price, ingredients, description, photoUrl } = req.body;
 
     const item = new MenuItem({
       name,
       price,
       ingredients: ingredients || [],
       description: description || "",
+      photoUrl: photoUrl || "",
     });
 
     await item.save();
