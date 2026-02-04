@@ -1,0 +1,28 @@
+services:
+  # Backend Service
+  - type: web
+    name: foodieai-backend
+    env: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: NODE_ENV
+        value: production
+
+  # Frontend Static Site
+  - type: web
+    name: foodieai-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://foodieai-backend.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
