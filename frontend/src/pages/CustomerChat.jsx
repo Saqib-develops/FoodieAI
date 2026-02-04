@@ -38,7 +38,7 @@ export default function CustomerChat() {
     setTyping(true);
 
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/chat/query`, { message: input });
+      const res = await axios.post(`${API_BASE_URL}/api/chat/query`, { query: input });
       const dishes =
         res.data.answer?.slice(0, 3) ||
         res.data.reply?.slice(0, 3) ||
@@ -101,7 +101,11 @@ export default function CustomerChat() {
                       {/* Dish Photo */}
                       {dish.photoUrl ? (
                         <img
-                          src={dish.photoUrl}
+                          src={
+                            dish.photoUrl.startsWith("/")
+                              ? `${API_BASE_URL}${dish.photoUrl}`
+                              : dish.photoUrl
+                          }
                           alt={dish.name}
                           style={styles.dishPhoto}
                         />
