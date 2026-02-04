@@ -38,7 +38,7 @@ export default function CustomerChat() {
     setTyping(true);
 
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/chat/query`, { message: input });
+      const res = await axios.post(`${API_BASE_URL}/api/chat/query`, { query: input });
       const dishes = res.data.answer?.slice(0, 3) || [];
 
       // Store AI response with dishes
