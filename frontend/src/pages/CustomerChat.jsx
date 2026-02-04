@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
 // Use environment variable, fallback to Render URL if not set
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://foodieai-backend.onrender.com";
+const API_BASE_URL = "https://foodieai-backend.onrender.com";
 
 // Debug: Log the API URL (remove this after testing)
 console.log("🔍 API_BASE_URL:", API_BASE_URL);
@@ -38,7 +38,7 @@ export default function CustomerChat() {
     setTyping(true);
 
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/chat/query`, { query: input });
+      const res = await axios.post(`${API_BASE_URL}/api/chat/query`, { message: input });
       const dishes =
         res.data.answer?.slice(0, 3) ||
         res.data.reply?.slice(0, 3) ||
